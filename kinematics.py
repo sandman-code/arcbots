@@ -54,28 +54,22 @@ omega_s = 0
 
 all units in mm
 """
+alpha = np.pi/3
 r = 38.1 / 2
 d = 15
 H_0 = np.array(
-    [[-d, 1, 0], [-d, -1 / 2, -np.sin(np.pi / 3)], [-d, -1 / 2, np.sin(np.pi / 3)]]
+    [[-d, 1, 0], [-d, -1 / 2, -np.sin(alpha)], [-d, -1 / 2, np.sin(alpha)]]
 )
 u_b = np.array([0.0, 0.0, 0.1])
 u = H_0 * u_b
 
 
-def ik(omega_bz, v_bx, v_by):
+def fk(omega_bz, v_bx, v_by):
     return (1 / r) * np.dot(H_0, np.array([omega_bz, v_bx, v_by]))
 
 
-def fk(u_1, u_2, u_3):
-    mat = np.eye(3)
-    mat[0, 2] = u_1
-    mat[1, 2] = u_2
-    mat[2, 2] = u_3
-    mat = mat * r
-    print(mat)
-    return np.linalg.inv(mat) * H_0
+def ik(u_1, u_2, u_3):
+    return np.dot(np.array([[-1/2, -1/2, 1],[np.sqrt(3)/2, -np.sqrt(3)/2, 0],[1/d,1/d,1/d]]), np.array([u_1,u_2,u_3]))
 
-
-print(ik(0, 1, 0))
-print(fk(0.05249344, -0.02624672, -0.02624672))
+print(fk(0, 1, 0))
+print(ik(0.05249344*r, -0.02624672*r, -0.02624672*r))
