@@ -73,16 +73,25 @@ def drawVector(VEL_X, VEL_Y):
     pygame.draw.line(SCREEN, "red", (R_X, R_Y), (VEL_X + R_X, VEL_Y + R_Y), 5 )
     pygame.draw.circle(SCREEN, "red", (VEL_X + R_X, VEL_Y + R_Y), 5)
 
-def drawWheelVector(angle, w):
 
-    trans_0 = np.array([[1,0,R_X], [0,1,R_Y], [0,0,1]])
-    R = np.array([[1,0,0],[0,np.cos(np.pi/3), -np.sin(np.pi/3)], [0,np.sin(np.pi/3), np.cos(np.pi/3)]])
-    R_0 = np.dot(R,trans_0)
-    rot = np.dot(R_0, np.array([1,R_X, R_Y]))
-    rot = np.array([rot[1], rot[2], 1])
-    trans = np.array([[1,0,w*15], [0,1,0], [0,0,1]])
-    v_f = np.dot(trans, rot)
-    
-    pygame.draw.line(SCREEN, "red", (0, 0), (v_f[0], v_f[1]), 5 )
+def translate(x,y):
+    mat = np.eye(3)
+    mat[0,2] = x
+    mat[1,2] = y
+    return mat
+
+def rotate(angle):
+    return np.array([[np.cos(angle), np.sin(angle), 0],
+                     [-np.sin(angle), np.cos(angle), 0],
+                     [0,0,1],])
+
+def drawWheelVector(angle, w):
+    origin_x = 80 * np.cos(angle) + R_X
+    origin_y = 80 * np.sin(angle) + R_Y
+
+    v_0 = np.array([origin_x, origin_y, 1])
+    new_axis = translate(origin_x, origin_y) @ rotate(angle)
+    pass
+
 
 main()
